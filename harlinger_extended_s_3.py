@@ -16,7 +16,9 @@ k_x, k_y = np.meshgrid(
    np.linspace(-numberOfCells, numberOfCells, resolution),
    np.linspace(-numberOfCells, numberOfCells, resolution)
 );
-relativeDelta = (np.cos(k_x*2*np.pi) - np.cos(k_y*2*np.pi))**4+1;
+
+gamma = 0.3;
+relativeDelta = (1+gamma**2)*(np.cos(k_x*2*np.pi) - np.cos(k_y*2*np.pi)) - gamma**2;
 
 fig = plt.figure();
 ax = fig.add_subplot(111,projection='3d');
