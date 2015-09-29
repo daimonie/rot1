@@ -21,8 +21,8 @@ epsilon = 0.3;
 
 oscillation = np.cos(2*np.pi*k_x) - np.cos(2*np.pi*k_y);
 
-relativeDeltaReal = epsilon*oscillation;
-relativeDeltaImag = (1-epsilon)*oscillation;
+relativeDeltaReal = (1-epsilon)*oscillation;
+relativeDeltaImag = epsilon*2*np.sin(2*np.pi*k_x)*np.sin(2*np.pi*k_y);
 
 fig = plt.figure();
 ax = fig.add_subplot(121,projection='3d');
