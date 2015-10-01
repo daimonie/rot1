@@ -2,62 +2,112 @@ import numpy as np;
 from mpl_toolkits.mplot3d import axes3d;
 import matplotlib.pyplot as plt;
 from matplotlib import cm
+import argparse as argparse
 
-#equation (1), harlinger
-#>>> nx, ny = (3, 2)
-#>>> x = np.linspace(0, 1, nx)
-#>>> y = np.linspace(0, 1, ny)
-#>>> xv, yv = meshgrid(x, y)
 
-numberOfCells = 1;
-resolution = numberOfCells*100;
+parser = argparse.ArgumentParser(prog="python main.py",
+  description = "Takes Delta(k) and plots phase/amp graphs. Use -help to see more information."); 
+parser.add_argument('-m', '--mode', help='1 s, 2 g, 3 x2-y2, 4 xy.', default = 1, action='store', type = int);
+parser.add_argument('-p1', '--paramfirst', help='First parameter for plotting function.', default = 1.0, action='store', type = float);
+parser.add_argument('-p2', '--paramsecond', help='Second parameter for plotting function.', default = 1.0, action='store', type = float);
+parser.add_argument('-p3', '--paramthird', help='Third parameter for plotting function.', default = 1.0, action='store', type = float);
+parser.add_argument('-n', '--numbercells', help='Number of unit cells in the BZ to plot.', default = 1, action='store', type = int);
+parser.add_argument('-r', '--resolution', help='Resolution is the number of points along an axis.', default = 25, action='store', type = int);
+args = parser.parse_args();
+
+numberOfCells = args.numbercells;
+resolution = numberOfCells*args.resolution;
 
 k_x, k_y = np.meshgrid(
-   np.linspace(-numberOfCells, numberOfCells, resolution),
-   np.linspace(-numberOfCells, numberOfCells, resolution)
+   np.linspace(-numberOfCells*2*np.pi, numberOfCells*2*np.pi, resolution),
+   np.linspace(-numberOfCells*2*np.pi, numberOfCells*2*np.pi, resolution)
 );
+amplitude = 0;
+phase = 0;
 
-epsilon = 0.3;
+if args.mode == 1:
 
-oscillation = np.cos(2*np.pi*k_x) - np.cos(2*np.pi*k_y);
+  print "Amplitude/Phase for Delta_s (mode %s). Note that delta_s^2 = 0, because we aren't bothered with k_z. " % args.mode;  
+  delta_0 = args.paramfirst;
+  delta_1 = args.paramsecond;
+  
+  
+  delta = delta_0 + delta_1 * ( np.cos(k_x) + np.cos(k_y) );
+   
+  amplitude = np.absolute(delta);
+  phase = np.angle(delta); 
+elif args.mode == 2:
+  print "Amplitude/Phase for Delta_g (mode %s) " % args.mode;
 
-relativeDeltaReal = (1-epsilon)*oscillation;
-relativeDeltaImag = epsilon*2*np.sin(2*np.pi*k_x)*np.sin(2*np.pi*k_y);
+  delta_0 = args.paramfirst;
+  delta_1 = args.paramsecond;
+  delta_2 = args.paramthird;
+  
+  delta = delta_0*(np.sin(2*k_x)*np.sin(k_y) - np.sin( 2*k_y)*np.sin(k_x));
+   
+  amplitude = np.absolute(delta);
+  phase = np.angle(delta); 
+elif args.mode == 3:
+  print "Amplitude/Phase for Delta_{x2_y2} (mode %s) " % args.mode;
 
+  delta_0 = args.paramfirst;
+  delta_1 = args.paramsecond;
+  delta_2 = args.paramthird;
+  
+  delta = delta_0 * (np.cos(k_x) - np.cos(k_y))
+  
+  amplitude = np.absolute(delta);
+  phase = np.angle(delta); 
+
+elif args.mode == 4:
+  print "Amplitude/Phase for Delta_{xy} (mode %s) " % args.mode;
+
+  delta_0 = args.paramfirst;
+  delta_1 = args.paramsecond;
+  delta_2 = args.paramthird;
+  
+  delta = delta_0 * np.sin(k_x) * np.sin(k_y)
+  
+  amplitude = np.absolute(delta);
+  phase = np.angle(delta); 
+
+
+distance = 1.4
+limit = 2.0
+
+  
 fig = plt.figure();
 ax = fig.add_subplot(121,projection='3d');
-
-offset = numberOfCells+2;
-limit  = 20;
-
-ax.plot_surface(k_x, k_y, relativeDeltaReal, rstride=8, cstride=8, alpha=0.3)
-cset = ax.contour(k_x, k_y, relativeDeltaReal, zdir='z', offset=-offset, cmap=cm.coolwarm)
-cset = ax.contour(k_x, k_y, relativeDeltaReal, zdir='x', offset=-offset, cmap=cm.coolwarm)
-cset = ax.contour(k_x, k_y, relativeDeltaReal, zdir='y', offset=offset, cmap=cm.coolwarm)
  
+ax.plot_surface(k_x, k_y, amplitude, rstride=8, cstride=8, alpha=0.3)
+cset = ax.contour(k_x, k_y, amplitude, zdir='z', offset=-distance*np.abs(np.min(amplitude)), cmap=cm.coolwarm) 
+cset = ax.contour(k_x, k_y, amplitude, zdir='x', offset=-distance*np.abs(np.min(k_x)), cmap=cm.coolwarm) 
+cset = ax.contour(k_x, k_y, amplitude, zdir='y', offset=distance*np.max(k_y), cmap=cm.coolwarm)
+ 
+
 ax.set_xlabel('k_x')
-ax.set_xlim(-(numberOfCells+1) , (numberOfCells+1))
+ax.set_xlim(-limit*np.abs(np.min(k_x)), limit*np.max(k_x))
 ax.set_ylabel('k_y')
-ax.set_ylim(-(numberOfCells+1) , (numberOfCells+1) )
-ax.set_zlabel('Delta/Delta_0')
-ax.set_zlim(-offset , limit)
+ax.set_ylim(-limit*np.abs(np.min(k_y)), limit*np.max(k_y))
+ax.set_zlabel('Ampl')
+ax.set_zlim(-limit*np.abs(np.min(amplitude)), limit*np.max(amplitude))
 
-plt.title("Real");
+plt.title("Amplitude");
+if phase.any() > 0:
+  ax2 = fig.add_subplot(122,projection='3d');
+  
+  ax2.plot_surface(k_x, k_y, phase, rstride=8, cstride=8, alpha=0.3)
+      
+  cset = ax2.contour(k_x, k_y, amplitude, zdir='z', offset=-distance*np.abs(np.min(amplitude)), cmap=cm.coolwarm) 
+  cset = ax2.contour(k_x, k_y, amplitude, zdir='x', offset=-distance*np.abs(np.min(k_x)), cmap=cm.coolwarm) 
+  cset = ax2.contour(k_x, k_y, amplitude, zdir='y', offset=distance*np.max(k_y), cmap=cm.coolwarm)
+  
+  ax2.set_xlabel('k_x')
+  ax2.set_xlim(-limit*np.abs(np.min(k_x)), limit*np.max(k_x))
+  ax2.set_ylabel('k_y')
+  ax2.set_ylim(-limit*np.abs(np.min(k_y)), limit*np.max(k_y))
+  ax2.set_zlabel('Phase')
+  ax2.set_zlim(-limit*np.abs(np.min(phase)), limit*np.max(phase))
 
-
-ax2 = fig.add_subplot(122,projection='3d');
- 
-ax2.plot_surface(k_x, k_y, relativeDeltaImag, rstride=8, cstride=8, alpha=0.3)
-cset = ax2.contour(k_x, k_y, relativeDeltaImag, zdir='z', offset=-offset, cmap=cm.coolwarm)
-cset = ax2.contour(k_x, k_y, relativeDeltaImag, zdir='x', offset=-offset, cmap=cm.coolwarm)
-cset = ax2.contour(k_x, k_y, relativeDeltaImag, zdir='y', offset=offset, cmap=cm.coolwarm)
- 
-ax2.set_xlabel('k_x')
-ax2.set_xlim(-(numberOfCells+1) , (numberOfCells+1))
-ax2.set_ylabel('k_y')
-ax2.set_ylim(-(numberOfCells+1) , (numberOfCells+1) )
-ax2.set_zlabel('Delta/Delta_0')
-ax2.set_zlim(-offset , limit)
-
-plt.title("Imaginary");
+  plt.title("Phase");
 plt.show()
