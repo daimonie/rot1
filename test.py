@@ -43,4 +43,17 @@ def numpy_arange3():
   
 timer("numpy_linspace","numpy_arange")
 timer("numpy_linspace2","numpy_arange2")
-timer("numpy_linspace3","numpy_arange3")
+
+
+def aranger():
+	total = np.arange(0,100,0.25);
+def ranger():
+	total = range(0,100,400)
+def aranger2():
+	total = np.arange(0,100,0.025);
+def ranger2():
+	total = range(0,100,4000)
+def aranger3():
+	total = np.arange(0,100,0.0025);
+timer("aranger","ranger");
+timer("aranger2","ranger2");
