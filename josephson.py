@@ -43,14 +43,19 @@ eta	= hbar**2 / 2 / mass / ev / lattice**2
 deltaS	= 3e-3
 kFermi	= 3*np.pi/4
 fluxnum = 2.0 
+#small changes
 
+dFlux = 4.0*fluxnum*np.pi/N
+dDelta = 10*deltaS/N
+dK = kFermi/N
+dPhi = 2*np.pi/N
+
+dkdphi = dK*dPhi;
 #Make our arrays of parameters.
-fluxArray	= np.arange(-fluxnum*2*np.pi,fluxnum*2*np.pi, 4.0*fluxnum*np.pi/N)
-deltaArray	= np.arange(2*deltaS/N, 10*deltaS, 10*deltaS/N)
-kArray		= np.arange(kFermi/N, kFermi, kFermi/N)
-phiArray	= np.arange(0,2*np.pi, 2*np.pi/N)
-#Approximately the surface element for integration.
-dkdphi	= kFermi * 2.0*fluxnum*np.pi/ N**2
+fluxArray	= np.arange(-fluxnum*2*np.pi,fluxnum*2*np.pi, dFlux)
+deltaArray	= np.arange(2*deltaS/N, 10*deltaS, dDelta)
+kArray		= np.arange(kFermi/N, kFermi, dK)
+phiArray	= np.arange(0,2*np.pi, dPhi) 
 #We define the figure here so that the different modes can assign labels/titles
 fig = plt.figure(figsize=(15,15))
 #Define Lambda functions.
@@ -93,10 +98,14 @@ elif plotMode == 1:
 	flux, delta, k, phi = np.meshgrid(fluxArray,deltaArray,kArray,phiArray);
 	z = dCurrent(flux,delta, k, phi).sum(axis=-1).sum(axis=-1) 
 	
+	
 	x,y = np.meshgrid(fluxArray, deltaArray)
+	
+	zero = np.max(z[np.abs(x)<0.5*dFlux])/np.max(z)
+	
 	plt.xlabel("k_x")
 	plt.ylabel("k_y")
-	plt.title("Inspecting Josephson current, N=%d, d=%d, m=%d, p=%d" % (N,gapfunction, mechanism, plotMode))
+	plt.title("Inspecting Josephson current,zero-flux/max ratio %2.3e, N=%d, d=%d, m=%d, p=%d" % (zero, N,gapfunction, mechanism, plotMode))
 elif plotMode == 2: 
 	k, phi = np.meshgrid(kArray,phiArray);
 	z = dCurrent(np.pi/2,0.3*deltaS, k, phi)
