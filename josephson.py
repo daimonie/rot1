@@ -32,6 +32,13 @@ mechanism	= args.mechanism 	#Scattering
 plotMode	= args.plot 		#Plot Mode
 filename	= args.filename 	#Filename if we want to save
 
+if N > 90:
+	raise Exception("An initial test showed that, while for N<90 the program is well behaved and there is a definite linear scaling,\n N>90 leads to a sudden calculation time more than four times over N=90 which meant I cancelled it");
+
+startTime = time.time();
+
+if filename != "default.png":
+	print "Saving Figure (%s) for -d %d -m %d -p %d -n %d." % (filename, gapfunction, mechanism, plotMode, N)
 #Some physical constants.
 hbar	=  physical_constants["Planck constant over 2 pi"][0]
 mass	=  physical_constants["electron mass"][0]
@@ -124,3 +131,5 @@ if filename != "default.png":
 	fig.savefig(filename)
 else:
 	plt.show()
+	
+print "Elapsed time %2.3f" % (time.time() - startTime)
