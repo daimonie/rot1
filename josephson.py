@@ -89,7 +89,7 @@ dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*
 #Pre-plotting
 ax = fig.add_subplot(111, projection='3d')  
 ax.view_init(50, 80) 
-#Mode switching
+#Mode switching 
 if plotMode == 0: #Plot tunnel function in k-space
 	k, phi = np.meshgrid(kArray,phiArray)
 	
@@ -108,24 +108,25 @@ elif plotMode == 1:
 	
 	x,y = np.meshgrid(fluxArray, deltaArray)
 	
-	zero = np.max(z[np.abs(x)<0.5*dFlux])/np.max(z)
+	plt.xlabel("Flux")
+	plt.ylabel("Delta")
+	plt.title("Inspecting Josephson current, N=%d, d=%d, m=%d, p=%d" % (N,gapfunction, mechanism, plotMode))
+elif plotMode == 2:  
+	ax.view_init(0, 90) 
+	#It's just mode 1 with a different view angle
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")
-	plt.title("Inspecting Josephson current,zero-flux/max ratio %2.3e, N=%d, d=%d, m=%d, p=%d" % (zero, N,gapfunction, mechanism, plotMode))
-elif plotMode == 2: 
-	k, phi = np.meshgrid(kArray,phiArray);
-	z = dCurrent(np.pi/2,0.3*deltaS, k, phi)
+	flux, delta, k, phi = np.meshgrid(fluxArray,deltaArray,kArray,phiArray);
+	z = dCurrent(flux,delta, k, phi).sum(axis=-1).sum(axis=-1) 
 	
-	x = k * np.cos(phi)
-	y = k * np.sin(phi)
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")
-	plt.title("Inspecting Josephson current element, N=%d, d=%d, m=%d, p=%d" % (N,gapfunction, mechanism, plotMode))
+	x,y = np.meshgrid(fluxArray, deltaArray) 
+	
+	plt.xlabel("Flux")
+	plt.ylabel("Delta") 
+	plt.title("Inspecting Josephson current, N=%d, d=%d, m=%d, p=%d" % (N,gapfunction, mechanism, plotMode))
 else:
-	raise Exception("Unknown plot mode.");  
-ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antialiased=False)
+	raise Exception("Unknown plot mode.");   
+ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antialiased=False) 
 
 if filename != "default.png":	
 	fig.savefig(filename)
