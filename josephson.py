@@ -75,8 +75,8 @@ elif mechanism == 1: #A slice of k-space.
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
-Energy		= lambda kk, dd: (eta*kk**2 - dd**2)**0.5
-EnergyR		= lambda kk, dd, pp: (eta*kk**2 - Delta(kk,dd,pp)**2)**0.5
+Energy		= lambda kk, dd: (eta*kk**2 + dd**2)**0.5
+EnergyR		= lambda kk, dd, pp: (eta*kk**2 + Delta(kk,dd,pp)**2)**0.5
 #Current
 dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,dd)+EnergyR(kk,dd,pp)) * (Energy(kk,dd)*EnergyR(kk,dd,pp)))
 #Pre-plotting
