@@ -18,12 +18,12 @@ import matplotlib.pyplot as plt
 #Commandline arguments instruction.
 parser	= argparse.ArgumentParser(prog="Josephson.Py",
   description = "This file calculates the josephson current, given a microscopic mechanis, scattering mechanism and a resolution. Note that this file also has inspection modes.")  
-parser.add_argument('-n', '--number', help='Resolution onf the calculation.', default = 10, action='store', type = int)  
-parser.add_argument('-d', '--gapfunction', help='Resolution onf the calculation.', default = 10, action='store', type = int)  
-parser.add_argument('-m', '--mechanism', help='Resolution onf the calculation.', default = 10, action='store', type = int)   
-parser.add_argument('-p', '--plot', help='Resolution onf the calculation.', default = 10, action='store', type = int)  
+parser.add_argument('-n', '--number', help='Resolution of the calculation.', default = 10, action='store', type = int)  
+parser.add_argument('-d', '--gapfunction', help='Gap function.', default = 10, action='store', type = int)  
+parser.add_argument('-m', '--mechanism', help='Scattering mechanism.', default = 10, action='store', type = int)   
+parser.add_argument('-p', '--plot', help='Plotting mode.', default = 10, action='store', type = int)  
 parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action='store', type = int)  
-parser.add_argument('-b', '--band', help='Fermi Surface.', default = 10, action='store', type = int)  
+parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
 parser.add_argument('-s', '--silent', help='Do not plot, do not save', default = False, action='store', type = bool) 
 args	= parser.parse_args() 
@@ -65,10 +65,10 @@ dPhi = 2*np.pi/N
 
 dkdphi = dK*dPhi;
 #Make our arrays of parameters.
-fluxArray	= np.arange(-fluxnum*2*np.pi,fluxnum*2*np.pi, dFlux)
-deltaArray	= np.arange(2*deltaS/N, 10*deltaS, dDelta)
-kArray		= np.arange(kFermi/N, kFermi, dK)
-phiArray	= np.arange(0,2*np.pi, dPhi) 
+fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
+deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
+kArray		= np.arange(0, 		kFermi+dK, 		dK)
+phiArray	= np.arange(0,			2*np.pi+dPhi, 		dPhi) 
 #We define the figure here so that the different modes can assign labels/titles
 fig = plt.figure(figsize=(15,15))
 #Define Lambda functions.
@@ -108,17 +108,18 @@ elif fermi == 1:
 	fermiLevel = kFermis[start:end,:]
 	fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
 	
-	findFermi = lambda pp: fermiSurface[np.where(pp==phiArray)]
-	
-	Fermi = lambda kk,pp : 1.0
+	alpha = dPhi*2;
+###  See also data_retrieval.py
+	findFermi = lambda pp: map(lambda alpha: fermiSurface[alpha==phiArray], pp)
+	Fermi = lambda kk,pp : Heaviside(findFermi(pp)-kk);
 else:
 	raise Exception("Unknown fermi surface requested.")
 
 #The tunnel 'function' is required for the other functions.
-if mechanism == 0: #constant rate
+if mechanism == 0: #constant rate 
 	tunnel = lambda kk, pp: 1.0 * Fermi(kk, pp)
 elif mechanism == 1: #A slice of k-space.
-	tunnel = lambda kk, pp: 1.0
+	tunnel = lambda kk, pp:  Heaviside(np.pi/4-pp) * Fermi(kk, pp)
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
@@ -136,8 +137,8 @@ if plotMode == 0: #Plot tunnel function in k-space
 	
 	x = k * np.cos(phi)
 	y = k * np.sin(phi)
-	
-	z = tunnel(x, y)
+	 
+	z = tunnel(k, phi)
 	
 	plt.xlabel("k_x")
 	plt.ylabel("k_y")
