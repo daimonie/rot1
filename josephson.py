@@ -107,7 +107,10 @@ elif fermi == 1:
 	
 	fermiLevel = kFermis[start:end,:]
 	fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
-	 
+	
+	findFermi = lambda pp: fermiSurface[np.where(pp==phiArray)]
+	
+	Fermi = lambda kk,pp : 1.0
 else:
 	raise Exception("Unknown fermi surface requested.")
 
@@ -115,7 +118,7 @@ else:
 if mechanism == 0: #constant rate
 	tunnel = lambda kk, pp: 1.0 * Fermi(kk, pp)
 elif mechanism == 1: #A slice of k-space.
-	tunnel = lambda kk, pp: Heaviside(pp)*Heaviside(pp - np.pi/2)*Heaviside(kk-kFermi/2) * Fermi(kk, pp)
+	tunnel = lambda kk, pp: 1.0
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
@@ -139,10 +142,11 @@ if plotMode == 0: #Plot tunnel function in k-space
 	plt.xlabel("k_x")
 	plt.ylabel("k_y")
 	title = "Tunneling Matrix";
-elif plotMode == 1: 
+elif plotMode == 1:  
+	
 	flux, delta, k, phi = np.meshgrid(fluxArray,deltaArray,kArray,phiArray);
 	z = dCurrent(flux,delta, k, phi).sum(axis=-1).sum(axis=-1) 
-	
+	 
 	
 	x,y = np.meshgrid(fluxArray, deltaArray)
 	
