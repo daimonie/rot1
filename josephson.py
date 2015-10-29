@@ -145,7 +145,7 @@ else:
 if mechanism == 0: #constant rate 
 	tunnel = lambda kk, pp: 1.0 * Fermi(kk, pp)
 elif mechanism == 1: #A slice of k-space.
-	tunnel = lambda kk, pp:  Heaviside(np.pi/2.-pp) * Fermi(kk, pp)
+	tunnel = lambda kk, pp:  Heaviside(np.pi/4.-pp) * Fermi(kk, pp)
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
