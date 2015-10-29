@@ -14,7 +14,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import matplotlib.pyplot as plt
-
+from laosto import *
+from conductivity import *
 #Commandline arguments instruction.
 parser	= argparse.ArgumentParser(prog="Josephson.Py",
   description = "This file calculates the josephson current, given a microscopic mechanis, scattering mechanism and a resolution. Note that this file also has inspection modes.")  
@@ -37,38 +38,51 @@ filename	= args.filename 	#Filename if we want to save
 fermi		= args.fermi 		#Type of Fermi surface
 band		= args.band	 	#Band number. There are typically 4 bands as far as I can see.
 silent		= args.silent	 	#Silent. Don't plot, don't save.
-
-if N > 90:
-	raise Exception("An initial test showed that, while for N<90 the program is well behaved and there is a definite linear scaling,\n N>90 leads to a sudden calculation time more than four times over N=90 which meant I cancelled it");
-
+ 
 startTime = time.time();
 
 if filename != "default.png":
-	print "Saving Figure (%s) for -d %d -m %d -p %d -n %d." % (filename, gapfunction, mechanism, plotMode, N)
+	print "Saving Figure (%s) for -d %d -m %d -p %d -n %d -k %d -b %d." % (filename, gapfunction, mechanism, plotMode, N, fermi, band)
 #Some physical constants.
 hbar	=  physical_constants["Planck constant over 2 pi"][0]
 mass	=  physical_constants["electron mass"][0]
 ev	=  physical_constants["electron volt"][0]
 lattice	= 3.787 * physical_constants["Angstrom star"][0] #(From Wikipedia)
 
-
 eta	= hbar**2 / 2 / mass / ev / lattice**2
 deltaS	= 3e-3
-kFermi	= 3*np.pi/4
 fluxnum = 2.0 
 #small changes
-
 dFlux = 4.0*fluxnum*np.pi/N
 dDelta = 10*deltaS/N
-dK = kFermi/N
 dPhi = 2*np.pi/N
 
-dkdphi = dK*dPhi;
 #Make our arrays of parameters.
 fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
 deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
-kArray		= np.arange(1e-15, 		kFermi+2*dK, 		dK)
 phiArray	= np.arange(0,			2*np.pi+dPhi, 		dPhi) 
+
+
+#Calculate fermi surface
+
+kF0 = [0.5*pi, 0.5*pi, 0.5*pi, 0.5*pi, -1, -1]
+system = LAOSTO(mu=0, H=30, theta=np.pi/4, g=5, gL=1, tl1=340, tl2=340, th=12.5, td=12.5, dE=60, dZ=15, dSO=5)
+
+
+kFermis, indices = kF_angle(system, phiArray, kF0)
+start = indices[band, 1]
+end = indices[band, 2]
+
+fermiLevel = kFermis[start:end,:]
+fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
+
+#Parameters, small changes, arrays; these are here because they depend on the fermi surface calculation, which itself depends on phiArray
+kFermi	= np.max(fermiSurface)
+dK = kFermi/N
+kArray		= np.arange(1e-15, kFermi+2*dK, dK) 
+dkdphi = dK*dPhi;
+
+
 #We define the figure here so that the different modes can assign labels/titles
 fig = plt.figure(figsize=(15,15))
 #Define Lambda functions.
@@ -92,30 +106,15 @@ if band >= 4:
 	raise Exception("There are only four bands");
 
 if fermi == 0:
-	Fermi = lambda kk, pp: 1.0;
-elif fermi == 1:
-		
-	from laosto import *
-	from conductivity import *
-	kF0 = [0.5*pi, 0.5*pi, 0.5*pi, 0.5*pi, -1, -1]
-	system = LAOSTO(mu=0, H=30, theta=np.pi/4, g=5, gL=1, tl1=340, tl2=340, th=12.5, td=12.5, dE=60, dZ=15, dSO=5)
-	
-	
-	kFermis, indices = kF_angle(system, phiArray, kF0)
-	start = indices[band, 1]
-	end = indices[band, 2]
-	
-	fermiLevel = kFermis[start:end,:]
-	fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
-	
-	alpha = dPhi*2; 
+	Fermi = lambda kk, pp: np.max(fermiSurface);
+elif fermi == 1:  
 	def Fermi( kk, pp):	
 		# I am sorry to say that this is the best implementation I could find. My python needs some work.
 		# Anyway, if have a new mode with a new meshgrid, you'll need to add a clause.
 		fermi = pp; 
 		if fermi.shape == (N+1,N+1,N+2,N+1):
 			#fermi[...,...,...,:] = fermiSurface 
-			print "Using Fermi (N,N,N+1,N)";
+			#print "Using Fermi (N,N,N+1,N)";
 			for i in range(0,N+1):
 				for j in range(0,N+1):
 					for ii in range(0,N+2):
@@ -144,9 +143,9 @@ else:
 
 #The tunnel 'function' is required for the other functions.
 if mechanism == 0: #constant rate 
-	tunnel = lambda kk, pp: 1.0 * Heaviside(Fermi(kk, pp)-kk)
+	tunnel = lambda kk, pp: 1.0 * Fermi(kk, pp)
 elif mechanism == 1: #A slice of k-space.
-	tunnel = lambda kk, pp:  Heaviside(np.pi/2.-pp) * Heaviside(Fermi(kk, pp)-kk)
+	tunnel = lambda kk, pp:  Heaviside(np.pi/2.-pp) * Fermi(kk, pp)
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
