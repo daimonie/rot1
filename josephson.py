@@ -218,7 +218,22 @@ elif plotMode == 4:
 	
 	plt.xlabel("k_x")
 	plt.ylabel("k_y")  
-	title = "Fermi disc"; 
+	title = "Fermi disc";
+elif plotMode == 5:
+	
+	ax.view_init(30, 30) 
+	k, phi = np.meshgrid(kArray,phiArray)
+	
+	x = k * np.cos(phi)
+	y = k * np.sin(phi)
+	
+	deltaTunnel = lambda kk, pp: tunnel(kk,pp) * Delta(deltaS, kk, pp)
+	
+	z = deltaTunnel(k, phi);
+	
+	plt.xlabel("k_x")
+	plt.ylabel("k_y")  
+	title = "Gap function times tunnel"; 
 else:
 	raise Exception("Unknown plot mode.");   
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
