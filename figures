@@ -1,37 +1,38 @@
 #generate results 
 rm *.png;
-
+git rm *.png
 #fermi surface, band 0
 python josephson.py -k 1 -b 0 -n 50 -d 0 -m 0 -p 4 -f "figure_k1_b0_n50_d0_m0_p4.png"
 #calculations for mechanisms, band 0
 python josephson.py -k 1 -b 0 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b0_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 0 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b0_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 0 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b0_n50_d0_m1_p2.png"  
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b0_n50_d1_m1_p2.png"
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b0_n50_d2_m1_p2.png"  
 
 
 #fermi surface, band 1
 python josephson.py -k 1 -b 1 -n 50 -d 0 -m 0 -p 4 -f "figure_k1_b1_n50_d0_m0_p4.png"
 #calculations for mechanisms, band 0
-python josephson.py -k 1 -b 1 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b1_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 1 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b1_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 1 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b1_n50_d0_m1_p2.png"  
+python josephson.py -k 1 -b 1 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b1_n50_d1_m1_p2.png"
+python josephson.py -k 1 -b 1 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b1_n50_d2_m1_p2.png"
+python josephson.py -k 1 -b 1 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b1_n50_d3_m1_p2.png"  
 
 
 
 #fermi surface, band 2
 python josephson.py -k 1 -b 2 -n 50 -d 0 -m 0 -p 4 -f "figure_k1_b2_n50_d0_m0_p4.png"
 #calculations for mechanisms, band 0
-python josephson.py -k 1 -b 2 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b2_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 2 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b2_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 2 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b2_n50_d0_m1_p2.png"  
+python josephson.py -k 1 -b 2 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b2_n50_d1_m1_p2.png"
+python josephson.py -k 1 -b 2 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b2_n50_d2_m1_p2.png"
+python josephson.py -k 1 -b 2 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b2_n50_d3_m1_p2.png"  
 
 
 
 #fermi surface, band 3
 python josephson.py -k 1 -b 3 -n 50 -d 0 -m 0 -p 4 -f "figure_k1_b3_n50_d0_m0_p4.png"
 #calculations for mechanisms, band 
-python josephson.py -k 1 -b 3 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b3_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 3 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b3_n50_d0_m1_p2.png"
-python josephson.py -k 1 -b 3 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b3_n50_d0_m1_p2.png"  
+python josephson.py -k 1 -b 3 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b3_n50_d1_m1_p2.png"
+python josephson.py -k 1 -b 3 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b3_n50_d2_m1_p2.png"
+python josephson.py -k 1 -b 3 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b3_n50_d3_m1_p2.png"  
 
+git add *.png
 chromium *.png
