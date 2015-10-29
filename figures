@@ -1,36 +1,69 @@
 #generate results 
 rm *.png;
 
-python josephson.py -n 80 -d 0 -m 0 -p 3 -f "figure_d0_m0_p3_n80.png"
-python josephson.py -n 80 -d 1 -m 0 -p 3 -f "figure_d1_m0_p3_n80.png"
-python josephson.py -n 80 -d 2 -m 0 -p 3 -f "figure_d2_m0_p3_n80.png"
+python josephson.py -k 0 -b 0 -n 80 -d 0 -m 0 -p 3 -f "figure_k0_b0_d0_m0_p3_n80.png"
+python josephson.py -k 0 -b 0 -n 80 -d 1 -m 0 -p 3 -f "figure_k0_b0_d1_m0_p3_n80.png"
+python josephson.py -k 0 -b 0 -n 80 -d 2 -m 0 -p 3 -f "figure_k0_b0_d2_m0_p3_n80.png"
 
-python josephson.py -n 50 -d 0 -m 0 -p 0 -f "figure_d0_m0_p0_n50.png"
-python josephson.py -n 50 -d 0 -m 0 -p 1 -f "figure_d0_m0_p1_n50.png"
-python josephson.py -n 50 -d 0 -m 0 -p 2 -f "figure_d0_m0_p2_n50.png"
-
-
-python josephson.py -n 50 -d 0 -m 1 -p 0 -f "figure_d0_m1_p0_n50.png"
-python josephson.py -n 50 -d 0 -m 1 -p 1 -f "figure_d0_m1_p1_n50.png"
-python josephson.py -n 50 -d 0 -m 1 -p 2 -f "figure_d0_m1_p2_n50.png"
-
-python josephson.py -n 50 -d 1 -m 0 -p 0 -f "figure_d1_m0_p0_n50.png"
-python josephson.py -n 50 -d 1 -m 0 -p 1 -f "figure_d1_m0_p1_n50.png"
-python josephson.py -n 50 -d 1 -m 0 -p 2 -f "figure_d1_m0_p2_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 0 -p 0 -f "figure_k0_b0_d0_m0_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 0 -p 1 -f "figure_k0_b0_d0_m0_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 0 -p 2 -f "figure_k0_b0_d0_m0_p2_n50.png"
 
 
-python josephson.py -n 50 -d 1 -m 1 -p 0 -f "figure_d1_m1_p0_n50.png"
-python josephson.py -n 50 -d 1 -m 1 -p 1 -f "figure_d1_m1_p1_n50.png"
-python josephson.py -n 50 -d 1 -m 1 -p 2 -f "figure_d1_m1_p2_n50.png" 
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 1 -p 0 -f "figure_k0_b0_d0_m1_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 1 -p 1 -f "figure_k0_b0_d0_m1_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 0 -m 1 -p 2 -f "figure_k0_b0_d0_m1_p2_n50.png"
+
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 0 -p 0 -f "figure_k0_b0_d1_m0_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 0 -p 1 -f "figure_k0_b0_d1_m0_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 0 -p 2 -f "figure_k0_b0_d1_m0_p2_n50.png"
 
 
-python josephson.py -n 50 -d 2 -m 0 -p 0 -f "figure_d2_m0_p0_n50.png"
-python josephson.py -n 50 -d 2 -m 0 -p 1 -f "figure_d2_m0_p1_n50.png"
-python josephson.py -n 50 -d 2 -m 0 -p 2 -f "figure_d2_m0_p2_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 1 -p 0 -f "figure_k0_b0_d1_m1_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 1 -p 1 -f "figure_k0_b0_d1_m1_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 1 -m 1 -p 2 -f "figure_k0_b0_d1_m1_p2_n50.png" 
 
 
-python josephson.py -n 50 -d 2 -m 1 -p 0 -f "figure_d2_m1_p0_n50.png"
-python josephson.py -n 50 -d 2 -m 1 -p 1 -f "figure_d2_m1_p1_n50.png"
-python josephson.py -n 50 -d 2 -m 1 -p 2 -f "figure_d2_m1_p2_n50.png" 
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 0 -p 0 -f "figure_k0_b0_d2_m0_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 0 -p 1 -f "figure_k0_b0_d2_m0_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 0 -p 2 -f "figure_k0_b0_d2_m0_p2_n50.png"
+
+
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 1 -p 0 -f "figure_k0_b0_d2_m1_p0_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 1 -p 1 -f "figure_k0_b0_d2_m1_p1_n50.png"
+python josephson.py -k 0 -b 0 -n 50 -d 2 -m 1 -p 2 -f "figure_k0_b0_d2_m1_p2_n50.png" 
+
+#Real fermi
+python josephson.py -k 1 -b 0 -n 80 -d 0 -m 0 -p 3 -f "figure_k1_b0_d0_m0_p3_n80.png"
+python josephson.py -k 1 -b 0 -n 80 -d 1 -m 0 -p 3 -f "figure_k1_b0_d1_m0_p3_n80.png"
+python josephson.py -k 1 -b 0 -n 80 -d 2 -m 0 -p 3 -f "figure_k1_b0_d2_m0_p3_n80.png"
+
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 0 -p 0 -f "figure_k1_b0_d0_m0_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 0 -p 1 -f "figure_k1_b0_d0_m0_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 0 -p 2 -f "figure_k1_b0_d0_m0_p2_n50.png"
+
+
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 1 -p 0 -f "figure_k1_b0_d0_m1_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 1 -p 1 -f "figure_k1_b0_d0_m1_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 1 -p 2 -f "figure_k1_b0_d0_m1_p2_n50.png"
+
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 0 -p 0 -f "figure_k1_b0_d1_m0_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 0 -p 1 -f "figure_k1_b0_d1_m0_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 0 -p 2 -f "figure_k1_b0_d1_m0_p2_n50.png"
+
+
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 1 -p 0 -f "figure_k1_b0_d1_m1_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 1 -p 1 -f "figure_k1_b0_d1_m1_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 1 -m 1 -p 2 -f "figure_k1_b0_d1_m1_p2_n50.png" 
+
+
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 0 -p 0 -f "figure_k1_b0_d2_m0_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 0 -p 1 -f "figure_k1_b0_d2_m0_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 0 -p 2 -f "figure_k1_b0_d2_m0_p2_n50.png"
+
+
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 1 -p 0 -f "figure_k1_b0_d2_m1_p0_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 1 -p 1 -f "figure_k1_b0_d2_m1_p1_n50.png"
+python josephson.py -k 1 -b 0 -n 50 -d 2 -m 1 -p 2 -f "figure_k1_b0_d2_m1_p2_n50.png" 
 
 chromium *.png

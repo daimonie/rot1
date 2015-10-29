@@ -67,7 +67,7 @@ dkdphi = dK*dPhi;
 #Make our arrays of parameters.
 fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
 deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
-kArray		= np.arange(0, 		kFermi+dK, 		dK)
+kArray		= np.arange(1e-15, 		kFermi+2*dK, 		dK)
 phiArray	= np.arange(0,			2*np.pi+dPhi, 		dPhi) 
 #We define the figure here so that the different modes can assign labels/titles
 fig = plt.figure(figsize=(15,15))
@@ -108,25 +108,52 @@ elif fermi == 1:
 	fermiLevel = kFermis[start:end,:]
 	fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
 	
-	alpha = dPhi*2;
-###  See also data_retrieval.py
-	findFermi = lambda pp: map(lambda alpha: fermiSurface[alpha==phiArray], pp)
-	Fermi = lambda kk,pp : Heaviside(findFermi(pp)-kk);
+	alpha = dPhi*2; 
+	def Fermi( kk, pp):	
+		# I am sorry to say that this is the best implementation I could find. My python needs some work.
+		# Anyway, if have a new mode with a new meshgrid, you'll need to add a clause.
+		fermi = pp; 
+		if fermi.shape == (N+1,N+1,N+2,N+1):
+			#fermi[...,...,...,:] = fermiSurface 
+			print "Using Fermi (N,N,N+1,N)";
+			for i in range(0,N+1):
+				for j in range(0,N+1):
+					for ii in range(0,N+2):
+						for jj in range(0,N+1):
+							#fermi[i, j, ii, jj] = 1;
+							if (fermiSurface[pp[i,j, ii, jj]==phiArray][0]  > kk[i,j, ii, jj]):
+								fermi[i,j, ii, jj] = 1.  
+							else:
+								fermi[i,j, ii, jj] = 0.
+		elif fermi.shape == (N+1, N+2):
+			#print "Using Fermi (N+1,N+2)";
+			#Principle has been tested
+			for i in range(0,N+1): 
+				for j in range(0,N+2): 
+					#print "(%d,%d): %s %s" % (i, j, fermiSurface[pp[i,j]==phiArray][0], kk[i,j])
+					if (fermiSurface[pp[i,j]==phiArray][0]  > kk[i,j]):
+						fermi[i,j] = 1.  
+					else:
+						fermi[i,j] = 0.
+		else:
+			raise Exception("Tuple too large. %s" % fermi.shape);
+		#print fermi
+		return fermi;
 else:
 	raise Exception("Unknown fermi surface requested.")
 
 #The tunnel 'function' is required for the other functions.
 if mechanism == 0: #constant rate 
-	tunnel = lambda kk, pp: 1.0 * Fermi(kk, pp)
+	tunnel = lambda kk, pp: 1.0 * Heaviside(Fermi(kk, pp)-kk)
 elif mechanism == 1: #A slice of k-space.
-	tunnel = lambda kk, pp:  Heaviside(np.pi/4-pp) * Fermi(kk, pp)
+	tunnel = lambda kk, pp:  Heaviside(np.pi/2.-pp) * Heaviside(Fermi(kk, pp)-kk)
 else:
 	raise Exception("Unknown tunnel function.") 
 #Energies.
 Energy		= lambda kk, dd: (eta*kk**2 + dd**2)**0.5
 EnergyR		= lambda kk, dd, pp: (eta*kk**2 + Delta(kk,dd,pp)**2)**0.5
 #Current
-dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,dd)+EnergyR(kk,dd,pp)) * (Energy(kk,dd)*EnergyR(kk,dd,pp)))
+dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
 #Pre-plotting
 ax = fig.add_subplot(111, projection='3d')  
 ax.view_init(50, 80) 
@@ -146,6 +173,7 @@ if plotMode == 0: #Plot tunnel function in k-space
 elif plotMode == 1:  
 	
 	flux, delta, k, phi = np.meshgrid(fluxArray,deltaArray,kArray,phiArray);
+	 
 	z = dCurrent(flux,delta, k, phi).sum(axis=-1).sum(axis=-1) 
 	 
 	
@@ -180,6 +208,18 @@ elif plotMode == 3:
 	plt.xlabel("k_x")
 	plt.ylabel("k_y")  
 	title = "Gap function";
+elif plotMode == 4:
+	ax.view_init(30, 30) 
+	k, phi = np.meshgrid(kArray,phiArray)
+	
+	x = k * np.cos(phi)
+	y = k * np.sin(phi)
+	
+	z =  Fermi(k, phi);
+	
+	plt.xlabel("k_x")
+	plt.ylabel("k_y")  
+	title = "Fermi disc"; 
 else:
 	raise Exception("Unknown plot mode.");   
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
@@ -187,6 +227,7 @@ ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antia
 
 if silent:
 	print "Silent Mode; no plotting, no saving.";
+	print "Title [%s]." % title;
 	plt.close();
 if filename != "default.png":	
 	fig.savefig(filename)
