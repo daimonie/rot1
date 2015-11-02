@@ -18,7 +18,7 @@ from laosto import *
 from conductivity import * 
 
 #N		= 40
-for N in range(14,100):
+for N in range(1,100, 10):
 	band		= 0
 	#Some physical constants.
 	hbar	=  physical_constants["Planck constant over 2 pi"][0]

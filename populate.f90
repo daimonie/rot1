@@ -21,8 +21,8 @@ module populate
 		!put fermi on the heap, whatever that is 
 		
 		!time to get some openmp in
-		
-		call omp_set_num_threads(omp_get_max_threads())
+		!minus one so I can still use the computer...
+		call omp_set_num_threads(omp_get_max_threads()-1)
 		!$omp parallel do  &
 		!$omp default(none) &
 		!$omp private(present_surface) &
