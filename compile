@@ -1,0 +1,4 @@
+#without this, segfault for large m
+export "GOMP_STACKSIZE=16m"
+f2py --fcompiler=gfortran --f90flags="-fopenmp -fbacktrace" -lgomp -m -c populate populate.f90
+python fortran_test.py 
