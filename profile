@@ -1,0 +1,10 @@
+python josephson.py -k 1 -b 0 -n 5 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 10 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 15 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 20 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 25 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 30 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 35 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 40 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 45 -d 0 -m 1 -p 2  -s True
+python josephson.py -k 1 -b 0 -n 50 -d 0 -m 1 -p 2  -s True
