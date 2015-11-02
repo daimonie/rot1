@@ -109,33 +109,36 @@ if fermi == 0:
 	Fermi = lambda kk, pp: np.max(fermiSurface);
 elif fermi == 1:  
 	def Fermi( kk, pp):	
+		raise Exception("This function is being made into a fortran function");
 		# I am sorry to say that this is the best implementation I could find. My python needs some work.
 		# Anyway, if have a new mode with a new meshgrid, you'll need to add a clause.
 		fermi = pp; 
-		if fermi.shape == (N+1,N+1,N+2,N+1):
-			#fermi[...,...,...,:] = fermiSurface 
-			#print "Using Fermi (N,N,N+1,N)";
-			for i in range(0,N+1):
-				for j in range(0,N+1):
-					for ii in range(0,N+2):
-						for jj in range(0,N+1):
+		
+		popTime = time.time(); 
+		if len(fermi.shape) == 4: 
+			for i in range(0,fermi.shape[0]):
+				for j in range(0,fermi.shape[1]):
+					for ii in range(0,fermi.shape[2]):
+						for jj in range(0,fermi.shape[3]):
 							#fermi[i, j, ii, jj] = 1;
 							if (fermiSurface[pp[i,j, ii, jj]==phiArray][0]  > kk[i,j, ii, jj]):
 								fermi[i,j, ii, jj] = 1.  
 							else:
-								fermi[i,j, ii, jj] = 0.
-		elif fermi.shape == (N+1, N+2):
+								fermi[i,j, ii, jj] = 0. 
+		elif len(fermi.shape) == 2:
 			#print "Using Fermi (N+1,N+2)";
 			#Principle has been tested
-			for i in range(0,N+1): 
-				for j in range(0,N+2): 
+			for i in range(0, fermi.shape[0]): 
+				for j in range(0,fermi.shape[1]): 
 					#print "(%d,%d): %s %s" % (i, j, fermiSurface[pp[i,j]==phiArray][0], kk[i,j])
 					if (fermiSurface[pp[i,j]==phiArray][0]  > kk[i,j]):
 						fermi[i,j] = 1.  
 					else:
 						fermi[i,j] = 0.
-		else:
-			raise Exception("Tuple too large. %s" % fermi.shape);
+		else: 
+			raise Exception("Tuple too large.");
+		  
+		print "Time taken for population is [%2.3f] s." % (time.time() - popTime);
 		#print fermi
 		return fermi;
 else:
@@ -239,6 +242,7 @@ else:
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
 ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antialiased=False) 
 
+print "Elapsed time %2.3f" % (time.time() - startTime)
 if silent:
 	print "Silent Mode; no plotting, no saving.";
 	print "Title [%s]." % title;
@@ -247,5 +251,3 @@ if filename != "default.png":
 	fig.savefig(filename)
 else:
 	plt.show()
-	
-print "Elapsed time %2.3f" % (time.time() - startTime)
