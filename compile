@@ -1,4 +1,16 @@
 #without this, segfault for large m
-export "GOMP_STACKSIZE=512m"
-f2py --fcompiler=gfortran --f90flags="-fopenmp -fbacktrace" -lgomp -m -c populate populate.f90
+export "GOMP_STACKSIZE=128m"
+export "OMP_STACKSIZE=128m"
+f2py --fcompiler=gfortran --f90flags="-fopenmp -fbacktrace -g" -lgomp -m -c populate populate.f90
 python fortran_test.py 
+
+#single core results. Or at least, without openMP
+#[1] Time elapsed is 0.001 [s].
+#[11] Time elapsed is 0.002 [s].
+#[21] Time elapsed is 0.049 [s].
+#[31] Time elapsed is 0.358 [s].
+#[41] Time elapsed is 1.227 [s].
+#[51] Time elapsed is 3.284 [s].
+#[61] Time elapsed is 8.446 [s].
+#[71] Time elapsed is 16.481 [s].
+#[81] Time elapsed is 29.122 [s].

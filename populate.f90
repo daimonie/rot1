@@ -22,15 +22,14 @@ module populate
 		
 		!time to get some openmp in
 		!minus one so I can still use the computer...
-		call omp_set_num_threads(omp_get_max_threads()-1)
+		call omp_set_num_threads(omp_get_max_threads())
 		!$omp parallel do  &
-		!$omp default(none) &
-		!$omp private(present_surface) &
-		!$omp firstprivate(first,second,third,fourth,angle,radius,angle_array,fermi_surface) &
+		!$omp default(firstprivate) &
+		!$omp private(present_surface) & 
 		!$omp shared(fermi)
 		do i = 1, first
 			do j = 1, second
-				do ii = 1, third
+				do ii = 1, third 
 					do jj = 1, fourth
 						!current angle is phi[i,j,ii,jj]
 						!we have to find the current fermi surface

@@ -18,7 +18,7 @@ from laosto import *
 from conductivity import * 
 
 #N		= 40
-for N in range(1,100, 10):
+for N in range(10,100, 5):
 	band		= 0
 	#Some physical constants.
 	hbar	=  physical_constants["Planck constant over 2 pi"][0]
@@ -75,4 +75,7 @@ for N in range(1,100, 10):
 		
 	fermi(k,phi)
 	#end of test
-	print "[%d] Time elapsed is %2.3f [s]." % (N, time.time() - startTime);
+	elapsedTime =  time.time() - startTime
+	print "[%d] Time elapsed is %2.3f [s]." % (N, elapsedTime);
+	if elapsedTime > 30.:
+		raise Exception("Elapsed time %2.3f > 30; TAKES TOO BLOODY LONG ERROR." % elapsedTime)
