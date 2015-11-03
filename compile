@@ -1,16 +1,21 @@
-#without this, segfault for large m
-export "GOMP_STACKSIZE=128m"
-export "OMP_STACKSIZE=128m"
-f2py --fcompiler=gfortran --f90flags="-fopenmp -fbacktrace -g" -lgomp -m -c populate populate.f90
-python fortran_test.py 
-
-#single core results. Or at least, without openMP
-#[1] Time elapsed is 0.001 [s].
-#[11] Time elapsed is 0.002 [s].
-#[21] Time elapsed is 0.049 [s].
-#[31] Time elapsed is 0.358 [s].
-#[41] Time elapsed is 1.227 [s].
-#[51] Time elapsed is 3.284 [s].
-#[61] Time elapsed is 8.446 [s].
-#[71] Time elapsed is 16.481 [s].
-#[81] Time elapsed is 29.122 [s].
+f2py --fcompiler=gfortran --f90flags="-fopenmp -g" -lgomp -m -c populate populate.f90
+#python fortran_test.py
+# without openMP, home computer
+#[10] Time elapsed is 0.000 [s].
+#[15] Time elapsed is 0.001 [s].
+#[20] Time elapsed is 0.006 [s].
+#[25] Time elapsed is 0.014 [s].
+#[30] Time elapsed is 0.045 [s].
+#[35] Time elapsed is 0.078 [s].
+#[40] Time elapsed is 0.145 [s].
+#[45] Time elapsed is 0.251 [s].
+#[50] Time elapsed is 0.419 [s].
+#[55] Time elapsed is 0.711 [s].
+#[60] Time elapsed is 1.125 [s].
+#[65] Time elapsed is 1.610 [s].
+#[70] Time elapsed is 2.230 [s].
+#[75] Time elapsed is 3.132 [s].
+#[80] Time elapsed is 4.054 [s].
+#[85] Time elapsed is 5.356 [s].
+#[90] Time elapsed is 6.940 [s].
+#[95] Time elapsed is 8.915 [s].

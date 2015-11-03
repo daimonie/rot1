@@ -26,6 +26,7 @@ parser.add_argument('-p', '--plot', help='Plotting mode.', default = 10, action=
 parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action='store', type = int)  
 parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
+parser.add_argument('-q', '--fortran', help='Use fortran for calculation of fermi surface.', default = True, action='store', type = bool) 
 parser.add_argument('-s', '--silent', help='Do not plot, do not save', default = False, action='store', type = bool) 
 args	= parser.parse_args() 
 
@@ -37,6 +38,7 @@ plotMode	= args.plot 		#Plot Mode
 filename	= args.filename 	#Filename if we want to save
 fermi		= args.fermi 		#Type of Fermi surface
 band		= args.band	 	#Band number. There are typically 4 bands as far as I can see.
+useFortran	= args.fortran		#Silent. Don't plot, don't save.
 silent		= args.silent	 	#Silent. Don't plot, don't save.
  
 startTime = time.time();
@@ -107,40 +109,52 @@ if band >= 4:
 
 if fermi == 0:
 	Fermi = lambda kk, pp: np.max(fermiSurface);
-elif fermi == 1:  
-	def Fermi( kk, pp):	
-		raise Exception("This function is being made into a fortran function");
-		# I am sorry to say that this is the best implementation I could find. My python needs some work.
-		# Anyway, if have a new mode with a new meshgrid, you'll need to add a clause.
-		fermi = pp; 
-		
-		popTime = time.time(); 
-		if len(fermi.shape) == 4: 
-			for i in range(0,fermi.shape[0]):
-				for j in range(0,fermi.shape[1]):
-					for ii in range(0,fermi.shape[2]):
-						for jj in range(0,fermi.shape[3]):
-							#fermi[i, j, ii, jj] = 1;
-							if (fermiSurface[pp[i,j, ii, jj]==phiArray][0]  > kk[i,j, ii, jj]):
-								fermi[i,j, ii, jj] = 1.  
-							else:
-								fermi[i,j, ii, jj] = 0. 
-		elif len(fermi.shape) == 2:
-			#print "Using Fermi (N+1,N+2)";
-			#Principle has been tested
-			for i in range(0, fermi.shape[0]): 
-				for j in range(0,fermi.shape[1]): 
-					#print "(%d,%d): %s %s" % (i, j, fermiSurface[pp[i,j]==phiArray][0], kk[i,j])
-					if (fermiSurface[pp[i,j]==phiArray][0]  > kk[i,j]):
-						fermi[i,j] = 1.  
-					else:
-						fermi[i,j] = 0.
-		else: 
-			raise Exception("Tuple too large.");
-		  
-		print "Time taken for population is [%2.3f] s." % (time.time() - popTime);
-		#print fermi
-		return fermi;
+elif fermi == 1:   
+	if useFortran: 
+		import populate as fpopulate  
+		def Fermi (kk, pp): 
+			if len(kk.shape) == 4:
+				return fpopulate.populate.fermi_integrand(first=kk.shape[0], second=kk.shape[1], third=kk.shape[2], fourth=kk.shape[3],
+					fermi_surface=fermiSurface, angle_array=phiArray, angle=pp, radius=kk);
+			elif len(kk.shape) == 2:
+				print kk.shape
+				print phiArray.shape
+				return fpopulate.populate.fermi_contour(first=kk.shape[0], second=kk.shape[1],
+					fermi_surface=fermiSurface, angle_array=phiArray, angle=pp, radius=kk);
+	else:
+		def Fermi( kk, pp):	
+			raise Exception("This function is being made into a fortran function");
+			# I am sorry to say that this is the best implementation I could find. My python needs some work.
+			# Anyway, if have a new mode with a new meshgrid, you'll need to add a clause.
+			fermi = pp; 
+			
+			popTime = time.time(); 
+			if len(fermi.shape) == 4: 
+				for i in range(0,fermi.shape[0]):
+					for j in range(0,fermi.shape[1]):
+						for ii in range(0,fermi.shape[2]):
+							for jj in range(0,fermi.shape[3]):
+								#fermi[i, j, ii, jj] = 1;
+								if (fermiSurface[pp[i,j, ii, jj]==phiArray][0]  > kk[i,j, ii, jj]):
+									fermi[i,j, ii, jj] = 1.  
+								else:
+									fermi[i,j, ii, jj] = 0. 
+			elif len(fermi.shape) == 2:
+				#print "Using Fermi (N+1,N+2)";
+				#Principle has been tested
+				for i in range(0, fermi.shape[0]): 
+					for j in range(0,fermi.shape[1]): 
+						#print "(%d,%d): %s %s" % (i, j, fermiSurface[pp[i,j]==phiArray][0], kk[i,j])
+						if (fermiSurface[pp[i,j]==phiArray][0]  > kk[i,j]):
+							fermi[i,j] = 1.  
+						else:
+							fermi[i,j] = 0.
+			else: 
+				raise Exception("Tuple too large.");
+			
+			print "Time taken for population is [%2.3f] s." % (time.time() - popTime);
+			#print fermi
+			return fermi;
 else:
 	raise Exception("Unknown fermi surface requested.")
 
