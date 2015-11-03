@@ -18,7 +18,7 @@ module populate
 		
 		double precision :: present_surface
 		integer :: i, j, n, m, a, omp_get_max_threads 
-		!while I would prefer using openMP, it causes a segfault I can't solve.
+		!Don't put everything to private. Private is on the stack, which is limited thread memory.
 		call omp_set_num_threads(omp_get_max_threads())
 		!$omp parallel do  &
 		!$omp default(shared) &
@@ -60,7 +60,7 @@ module populate
 		
 		double precision :: present_surface
 		integer :: i, j, n, m, a, omp_get_max_threads 
-		!while I would prefer using openMP, it causes a segfault I can't solve.
+		!Don't put everything to private. Private is on the stack, which is limited thread memory.
 		call omp_set_num_threads(omp_get_max_threads())
 		!$omp parallel do  &
 		!$omp default(shared) &

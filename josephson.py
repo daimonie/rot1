@@ -26,8 +26,9 @@ parser.add_argument('-p', '--plot', help='Plotting mode. 0 tunnel matrix, 1 jose
 parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action='store', type = int)  
 parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
-parser.add_argument('-q', '--fortran', help='Use fortran for calculation of fermi surface.', default = True, action='store', type = bool) 
+parser.add_argument('--fortran', help='Use fortran for calculation of fermi surface.', default = True, action='store', type = bool) 
 parser.add_argument('-s', '--silent', help='Do not plot, do not save', default = False, action='store', type = bool) 
+parser.add_argument('--scatter', help='Scatter plot instead of surface. Can be quite illuminating when plotting artefacts pop up.', default = False, action='store', type = bool) 
 args	= parser.parse_args() 
 
 
@@ -38,8 +39,9 @@ plotMode	= args.plot 		#Plot Mode
 filename	= args.filename 	#Filename if we want to save
 fermi		= args.fermi 		#Type of Fermi surface
 band		= args.band	 	#Band number. There are typically 4 bands as far as I can see.
-useFortran	= args.fortran		#Silent. Don't plot, don't save.
+useFortran	= args.fortran		#Use the fortran function?.
 silent		= args.silent	 	#Silent. Don't plot, don't save.
+scatter		= args.scatter	 	#Scatter plot for fun.
  
 startTime = time.time();
 
@@ -60,8 +62,8 @@ dDelta = 10*deltaS/N
 dPhi = 2*np.pi/N
 
 #Make our arrays of parameters.
-fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
-deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
+fluxArray	= np.arange(dFlux,	fluxnum*2*np.pi+dFlux,	dFlux)
+deltaArray	= np.arange(dDelta, 	10*deltaS+dDelta, 	dDelta)
 phiArray	= np.arange(0,			2*np.pi+dPhi, 		dPhi) 
 
 
@@ -252,11 +254,14 @@ elif plotMode == 5:
 else:
 	raise Exception("Unknown plot mode.");   
 
-stride = int(N/100);
+stride = 1+int(N/150);
+
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
 ax.set_aspect('equal')
-ax.plot_surface(x, y, z, rstride=stride, cstride=stride, cmap=cm.summer,linewidth=0.1)  
-
+if scatter:
+	ax.scatter(x,y,z);
+else:
+	ax.plot_surface(x, y, z, rstride=stride, cstride=stride, cmap=cm.summer,linewidth=0.1)  
 
 print "Elapsed time %2.3f" % (time.time() - startTime)
 if silent:
