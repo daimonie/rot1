@@ -149,8 +149,9 @@ if plotMode == 0: #Plot tunnel function in k-space
 	 
 	z = tunnel(k, phi)
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")
+	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Tunneling Matrix";
 elif plotMode == 1:  
 	
@@ -161,8 +162,8 @@ elif plotMode == 1:
 	
 	x,y = np.meshgrid(fluxArray, deltaArray)
 	
-	plt.xlabel("Flux")
-	plt.ylabel("Delta") 
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\Delta^0$") 
 	title = "Current";
 elif plotMode == 2:  
 	ax.view_init(0, 90) 
@@ -174,8 +175,8 @@ elif plotMode == 2:
 	
 	x,y = np.meshgrid(fluxArray, deltaArray) 
 	
-	plt.xlabel("Flux")
-	plt.ylabel("Delta")   
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\Delta^0$") 
 	title = "Current_k_phi";
 elif plotMode == 3:
 	
@@ -187,8 +188,9 @@ elif plotMode == 3:
 	
 	z = Delta(1, k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Gap function";
 elif plotMode == 4:
 	ax.view_init(30, 30) 
@@ -199,8 +201,9 @@ elif plotMode == 4:
 	
 	z =  Fermi(k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Fermi disc";
 elif plotMode == 5:
 	
@@ -214,12 +217,14 @@ elif plotMode == 5:
 	
 	z = deltaTunnel(k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	
+	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Gap function times tunnel"; 
 else:
 	raise Exception("Unknown plot mode.");   
-plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
+plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band)) 
 if scatter:
 	ax.scatter(x,y,z);
 else:
