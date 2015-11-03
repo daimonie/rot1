@@ -19,6 +19,10 @@ module populate
 		double precision :: present_surface
 		integer :: i, j, n, m, a, omp_get_max_threads 
 		!while I would prefer using openMP, it causes a segfault I can't solve.
+		call omp_set_num_threads(omp_get_max_threads())
+		!$omp parallel do  &
+		!$omp default(shared) &
+		!$omp private(present_surface) 
 		do m = 1, fourth 
 			do n = 1, third
 				do j = 1, second
@@ -40,6 +44,7 @@ module populate
 				end do		
 			end do
 		end do  
+		!$omp end parallel do
 	end subroutine fermi_integrand
 	
 	subroutine fermi_contour( first, second, fermi_surface, radius, angle, angle_array, fermi)
@@ -56,6 +61,10 @@ module populate
 		double precision :: present_surface
 		integer :: i, j, n, m, a, omp_get_max_threads 
 		!while I would prefer using openMP, it causes a segfault I can't solve.
+		call omp_set_num_threads(omp_get_max_threads())
+		!$omp parallel do  &
+		!$omp default(shared) &
+		!$omp private(present_surface) 
 		do j = 1, second
 			do i = 1, first
 				!current angle is phi[i,j,ii,jj]
@@ -73,5 +82,6 @@ module populate
 				end if			
 			end do		
 		end do		
+		!$omp end parallel do
 	end subroutine fermi_contour
 end module populate

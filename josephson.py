@@ -22,7 +22,7 @@ parser	= argparse.ArgumentParser(prog="Josephson.Py",
 parser.add_argument('-n', '--number', help='Resolution of the calculation.', default = 10, action='store', type = int)  
 parser.add_argument('-d', '--gapfunction', help='Gap function.', default = 10, action='store', type = int)  
 parser.add_argument('-m', '--mechanism', help='Scattering mechanism.', default = 10, action='store', type = int)   
-parser.add_argument('-p', '--plot', help='Plotting mode.', default = 10, action='store', type = int)  
+parser.add_argument('-p', '--plot', help='Plotting mode. 0 tunnel matrix, 1 josephson-surface, 2 josephson-current, 3 gap function, 4 fermi surface, 5 tunnel matrix times gap times fermi.', default = 10, action='store', type = int)  
 parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action='store', type = int)  
 parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
@@ -116,9 +116,7 @@ elif fermi == 1:
 			if len(kk.shape) == 4:
 				return fpopulate.populate.fermi_integrand(first=kk.shape[0], second=kk.shape[1], third=kk.shape[2], fourth=kk.shape[3],
 					fermi_surface=fermiSurface, angle_array=phiArray, angle=pp, radius=kk);
-			elif len(kk.shape) == 2:
-				print kk.shape
-				print phiArray.shape
+			elif len(kk.shape) == 2: 
 				return fpopulate.populate.fermi_contour(first=kk.shape[0], second=kk.shape[1],
 					fermi_surface=fermiSurface, angle_array=phiArray, angle=pp, radius=kk);
 	else:
@@ -183,8 +181,8 @@ if plotMode == 0: #Plot tunnel function in k-space
 	 
 	z = tunnel(k, phi)
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Tunneling Matrix";
 elif plotMode == 1:  
 	
@@ -195,8 +193,8 @@ elif plotMode == 1:
 	
 	x,y = np.meshgrid(fluxArray, deltaArray)
 	
-	plt.xlabel("Flux")
-	plt.ylabel("Delta") 
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\Delta^0_m$")   
 	title = "Current";
 elif plotMode == 2:  
 	ax.view_init(0, 90) 
@@ -208,8 +206,8 @@ elif plotMode == 2:
 	
 	x,y = np.meshgrid(fluxArray, deltaArray) 
 	
-	plt.xlabel("Flux")
-	plt.ylabel("Delta")   
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\Delta^0_m$")   
 	title = "Current_k_phi";
 elif plotMode == 3:
 	
@@ -221,8 +219,8 @@ elif plotMode == 3:
 	
 	z = Delta(1, k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Gap function";
 elif plotMode == 4:
 	ax.view_init(30, 30) 
@@ -233,8 +231,8 @@ elif plotMode == 4:
 	
 	z =  Fermi(k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Fermi disc";
 elif plotMode == 5:
 	
@@ -248,13 +246,17 @@ elif plotMode == 5:
 	
 	z = deltaTunnel(k, phi);
 	
-	plt.xlabel("k_x")
-	plt.ylabel("k_y")  
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
 	title = "Gap function times tunnel"; 
 else:
 	raise Exception("Unknown plot mode.");   
+
+stride = int(N/100);
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band))
-ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antialiased=False) 
+ax.set_aspect('equal')
+ax.plot_surface(x, y, z, rstride=stride, cstride=stride, cmap=cm.summer,linewidth=0.1)  
+
 
 print "Elapsed time %2.3f" % (time.time() - startTime)
 if silent:
