@@ -27,7 +27,8 @@ parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action
 parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
 parser.add_argument('--scatter', help='Use a scatterplot instead of a surface plot.', default = False, action='store', type = bool) 
-parser.add_argument('-s', '--silent', help='Do not plot, do not save', default = False, action='store', type = bool) 
+parser.add_argument('-s', '--silent', help='Do not plot, do not save.', default = False, action='store', type = bool) 
+parser.add_argument('-v', '--verbose', help='Output data for use with, say, gnuplot.', default = False, action='store', type = bool) 
 args	= parser.parse_args() 
 
 
@@ -44,7 +45,7 @@ silent		= args.silent	 	#Silent. Don't plot, don't save.
 startTime = time.time();
 
 if filename != "default.png":
-	print "Saving Figure (%s) for -d %d -m %d -p %d -n %d -k %d -b %d." % (filename, gapfunction, mechanism, plotMode, N, fermi, band)
+	print >> sys.stderr, "Saving Figure (%s) for -d %d -m %d -p %d -n %d -k %d -b %d." % (filename, gapfunction, mechanism, plotMode, N, fermi, band)
 #Some physical constants.
 hbar	=  physical_constants["Planck constant over 2 pi"][0]
 mass	=  physical_constants["electron mass"][0]
@@ -221,19 +222,19 @@ elif plotMode == 5:
 	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
 	plt.xlabel("$k_x$")
 	plt.ylabel("$k_y$")
-	title = "Gap function times tunnel"; 
+	title = "Gap function times tunnel";  
 else:
 	raise Exception("Unknown plot mode.");   
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band)) 
 if scatter:
 	ax.scatter(x,y,z);
 else:
-	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, antialiased=False) 
+	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, alpha=0.9) 
 
-print "Elapsed time %2.3f" % (time.time() - startTime)
+print >> sys.stderr, "Elapsed time %2.3f" % (time.time() - startTime)
 if silent:
-	print "Silent Mode; no plotting, no saving.";
-	print "Title [%s]." % title;
+	print >> sys.stderr, "Silent Mode; no plotting, no saving.";
+	print >> sys.stderr, "Title [%s]." % title;
 	plt.close();
 if filename != "default.png":	
 	fig.savefig(filename)
