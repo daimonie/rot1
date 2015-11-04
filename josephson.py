@@ -26,23 +26,31 @@ parser.add_argument('-p', '--plot', help='Plotting mode.', default = 10, action=
 parser.add_argument('-k', '--fermi', help='Fermi Surface.', default = 10, action='store', type = int)  
 parser.add_argument('-b', '--band', help='Fermi Surface band.', default = 10, action='store', type = int)  
 parser.add_argument('-f', '--filename', help='Sets the filename. Only saves when given.', default = "default.png", action='store', type = str) 
-parser.add_argument('--scatter', help='Use a scatterplot instead of a surface plot.', default = False, action='store', type = bool) 
 parser.add_argument('-s', '--silent', help='Do not plot, do not save.', default = False, action='store', type = bool) 
 parser.add_argument('-v', '--verbose', help='Output data for use with, say, gnuplot.', default = False, action='store', type = bool) 
+parser.add_argument('--scatter', help='Use a scatterplot instead of a surface plot.', default = False, action='store', type = bool) 
+parser.add_argument('--alpha', help='First view angle.', default = 1000, action='store', type = int)  
+parser.add_argument('--beta', help='Second view angle.', default = 1000, action='store', type = int)  
+parser.add_argument('--gamma', help='Plot transparency.', default = 0.9, action='store', type = float)  
 args	= parser.parse_args() 
 
 
-N		= args.number 		#Resolution
-gapfunction	= args.gapfunction 	#Gap function
-mechanism	= args.mechanism 	#Scattering
-plotMode	= args.plot 		#Plot Mode
-filename	= args.filename 	#Filename if we want to save
-fermi		= args.fermi 		#Type of Fermi surface
-band		= args.band	 	#Band number. There are typically 4 bands as far as I can see.
-scatter		= args.scatter	 	#Use a scatterplot instead of a surface plot..
-silent		= args.silent	 	#Silent. Don't plot, don't save.
+N		= args.number
+gapfunction	= args.gapfunction
+mechanism	= args.mechanism
+plotMode	= args.plot
+filename	= args.filename
+fermi		= args.fermi
+band		= args.band
+scatter		= args.scatter
+alpha		= args.alpha
+beta		= args.beta
+gamma		= args.gamma
+silent		= args.silent
  
 startTime = time.time();
+
+print >> sys.stderr, "The plot will be viewed for angle (%2.3f, %2.3f) and with alpha set to %2.3f" % (alpha, beta, gamma)
 
 if filename != "default.png":
 	print >> sys.stderr, "Saving Figure (%s) for -d %d -m %d -p %d -n %d -k %d -b %d." % (filename, gapfunction, mechanism, plotMode, N, fermi, band)
@@ -63,11 +71,12 @@ dPhi = 2*np.pi/N
 #Make our arrays of parameters.
 fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
 deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
-phiArray	= np.arange(0,			2*np.pi+dPhi, 		dPhi) 
+phiArray	= np.arange(0,			2*np.pi, 		dPhi) 
 
 
 #Calculate fermi surface
 
+laoTime = time.time();
 kF0 = [0.5*pi, 0.5*pi, 0.5*pi, 0.5*pi, -1, -1]
 system = LAOSTO(mu=0, H=30, theta=np.pi/4, g=5, gL=1, tl1=340, tl2=340, th=12.5, td=12.5, dE=60, dZ=15, dSO=5)
 
@@ -79,6 +88,7 @@ end = indices[band, 2]
 fermiLevel = kFermis[start:end,:]
 fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
 
+print >> sys.stderr, "Time taken for LAO/STO model is [%2.3f] s.", (time.time() - laoTime);
 #Parameters, small changes, arrays; these are here because they depend on the fermi surface calculation, which itself depends on phiArray
 kFermi	= np.max(fermiSurface)
 dK = kFermi/N
@@ -207,7 +217,6 @@ elif plotMode == 4:
 	plt.ylabel("$k_y$")
 	title = "Fermi disc";
 elif plotMode == 5:
-	
 	ax.view_init(30, 30) 
 	k, phi = np.meshgrid(kArray,phiArray)
 	
@@ -225,11 +234,18 @@ elif plotMode == 5:
 	title = "Gap function times tunnel";  
 else:
 	raise Exception("Unknown plot mode.");   
+
+
+if alpha < 500 and beta < 500:
+	ax.view_init(alpha, beta) 	
+
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band)) 
 if scatter:
-	ax.scatter(x,y,z);
+	ax.scatter(x, y, z,c=50.*(z+np.min(z))/np.max(z), cmap=cm.winter);
+elif gamma > 0.95:
+	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0) 
 else:
-	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, alpha=0.9) 
+	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0, alpha=gamma) 
 
 print >> sys.stderr, "Elapsed time %2.3f" % (time.time() - startTime)
 if silent:
