@@ -14,6 +14,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import matplotlib.pyplot as plt
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import MaxNLocator
+#LAO/STO model from Leiden
 from laosto import *
 from conductivity import *
 #Commandline arguments instruction.
@@ -71,7 +74,7 @@ dPhi = 2*np.pi/N
 #Make our arrays of parameters.
 fluxArray	= np.arange(-fluxnum*2*np.pi,	fluxnum*2*np.pi+dFlux,	dFlux)
 deltaArray	= np.arange(2*deltaS/N, 	10*deltaS+dDelta, 	dDelta)
-phiArray	= np.arange(0,			2*np.pi, 		dPhi) 
+phiArray	= np.linspace(0,		2*np.pi, N) 
 
 
 #Calculate fermi surface
@@ -95,19 +98,22 @@ dK = kFermi/N
 kArray		= np.arange(1e-15, kFermi+2*dK, dK) 
 dkdphi = dK*dPhi;
 
-
-#We define the figure here so that the different modes can assign labels/titles
-fig = plt.figure(figsize=(15,15))
 #Define Lambda functions.
 Heaviside 	= lambda xx: 1.0 * (xx>0) 
 Dirac 		= lambda xx: 1.0 * (xx==0) 
 #Gap Function.
-if gapfunction == 0: #d_{x^2-y^2}
+if gapfunction == 0: 
+	print >> sys.stderr, "Selected d_{x^2-y^2} wave";
 	Delta	= lambda dd, kk, pp: dd * ( np.cos(kk*np.cos(pp)) - np.cos(kk*np.sin(pp)))
-elif gapfunction == 1: #d_{xy}
+elif gapfunction == 1:  
+	print >> sys.stderr, "Selected d_{xy} wave";
 	Delta = lambda dd, kk, pp: dd*np.sin(kk*np.cos(pp))*np.sin(kk*np.sin(pp))
-elif gapfunction == 2: #s-wave
-	Delta = lambda dd, kk, pp: dd
+elif gapfunction == 2:  
+	print >> sys.stderr, "Selected isotropic  s-wave (equiv. leading order)";
+	Delta = lambda dd, kk, pp: dd + pp*0.
+elif gapfunction == 3:  
+	print >> sys.stderr, "Selected anisotropic s-wave (equiv. next leading order)";
+	Delta = lambda dd, kk, pp: deltaS + dd * ( np.cos(kk*np.cos(pp)) + np.cos(kk*np.sin(pp)))
 else:
 	raise Exception("Unknown gap function.") 
 #By far, the easiest way to incorporate the Fermi Surface is by just letting it tag along
@@ -148,8 +154,20 @@ EnergyR		= lambda kk, dd, pp: (eta*kk**2 + Delta(kk,dd,pp)**2)**0.5
 #Current
 dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
 #Pre-plotting
-ax = fig.add_subplot(111, projection='3d')  
-ax.view_init(50, 80) 
+flatWorld = True
+
+if plotMode == 6:
+	flatWorld = False
+
+
+if flatWorld:
+		
+	#We define the figure here so that the different modes can assign labels/titles
+	fig = plt.figure(figsize=(15,15))
+	ax = fig.add_subplot(111, projection='3d')  
+	ax.view_init(50, 80) 
+else:
+	fig, ax = plt.subplots()
 #Mode switching 
 title = "Unknown Mode." 
 if plotMode == 0: #Plot tunnel function in k-space
@@ -216,7 +234,7 @@ elif plotMode == 4:
 	plt.xlabel("$k_x$")
 	plt.ylabel("$k_y$")
 	title = "Fermi disc";
-elif plotMode == 5 or plotMode == 6:
+elif plotMode == 5:
 	ax.view_init(30, 30) 
 	k, phi = np.meshgrid(kArray,phiArray)
 	
@@ -227,7 +245,19 @@ elif plotMode == 5 or plotMode == 6:
 	
 	z = deltaTunnel(k, phi);
 	
+	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
+	plt.xlabel("$k_x$")
+	plt.ylabel("$k_y$")
+	title = "Gap function times tunnel";  
+elif plotMode == 6: 
+	k, phi = np.meshgrid(kArray,phiArray)
 	
+	x = k * np.cos(phi)
+	y = k * np.sin(phi)
+	 
+	
+	z =  Delta(deltaS, k, phi);
+	 
 	ax.set_aspect('equal'); #can be used for k-space, but this wants x-axis = y-axis
 	plt.xlabel("$k_x$")
 	plt.ylabel("$k_y$")
@@ -236,29 +266,26 @@ else:
 	raise Exception("Unknown plot mode.");   
 
 
-if alpha < 500 and beta < 500:
+if alpha < 360 and beta < 360:
 	ax.view_init(alpha, beta) 	
-
+	
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band)) 
+
 if scatter:
 	ax.scatter(x, y, z,c=50.*(z+np.min(z))/np.max(z), cmap=cm.winter);
 elif plotMode == 6: #sorry, this one is atypical.
- 	levels = MaxNLocator(nbins=20).tick_values(z.min(), z.max())
+ 	levels = MaxNLocator(nbins=40).tick_values(z.min(), z.max())
 
-	cmap = plt.get_cmap('summer')
+	cmap = plt.get_cmap('winter')
 	norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
 
-	fig, (ax0, ax1) = plt.subplots(nrows=2)
-
-	im = ax0.pcolormesh(x, y, z, cmap=cmap, norm=norm)
-	fig.colorbar(im, ax=ax0)
-	ax0.set_title('pcolormesh with levels')
-
-	cf = ax1.contourf(x, y, z, levels=levels, cmap=cmap)
-	fig.colorbar(cf, ax=ax1)
-	ax1.set_title('contourf with levels') 
-	fig.tight_layout()
+	cf = ax.contourf(x, y, z, levels=levels, cmap=cmap)
+	fig.colorbar(cf, ax=ax)   
 	
+	xf = fermiSurface * np.cos(phiArray)
+	yf = fermiSurface * np.sin(phiArray)
+	
+	ax.plot(xf,yf, 'r--');
 elif gamma > 0.95:
 	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0) 
 else:
