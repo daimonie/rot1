@@ -135,7 +135,7 @@ else:
 Energy		= lambda kk, dd: (eta*kk**2 + dd**2)**0.5
 EnergyR		= lambda kk, dd, pp: (eta*kk**2 + Delta(kk,dd,pp)**2)**0.5
 #Current
-dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
+dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
 #Pre-plotting
 ax = fig.add_subplot(111, projection='3d')  
 ax.view_init(50, 80) 
