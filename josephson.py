@@ -216,7 +216,7 @@ elif plotMode == 4:
 	plt.xlabel("$k_x$")
 	plt.ylabel("$k_y$")
 	title = "Fermi disc";
-elif plotMode == 5:
+elif plotMode == 5 or plotMode == 6:
 	ax.view_init(30, 30) 
 	k, phi = np.meshgrid(kArray,phiArray)
 	
@@ -242,6 +242,23 @@ if alpha < 500 and beta < 500:
 plt.title("%s, N=%d, d=%d, m=%d, p=%d, k=%d, b=%d" % (title, N,gapfunction, mechanism, plotMode, fermi, band)) 
 if scatter:
 	ax.scatter(x, y, z,c=50.*(z+np.min(z))/np.max(z), cmap=cm.winter);
+elif plotMode == 6: #sorry, this one is atypical.
+ 	levels = MaxNLocator(nbins=20).tick_values(z.min(), z.max())
+
+	cmap = plt.get_cmap('summer')
+	norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
+
+	fig, (ax0, ax1) = plt.subplots(nrows=2)
+
+	im = ax0.pcolormesh(x, y, z, cmap=cmap, norm=norm)
+	fig.colorbar(im, ax=ax0)
+	ax0.set_title('pcolormesh with levels')
+
+	cf = ax1.contourf(x, y, z, levels=levels, cmap=cmap)
+	fig.colorbar(cf, ax=ax1)
+	ax1.set_title('contourf with levels') 
+	fig.tight_layout()
+	
 elif gamma > 0.95:
 	ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.summer,linewidth=0) 
 else:
