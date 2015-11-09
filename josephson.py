@@ -91,12 +91,12 @@ end = indices[band, 2]
 fermiLevel = kFermis[start:end,:]
 fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
 
-print >> sys.stderr, "Time taken for LAO/STO model is [%2.3f] s.", (time.time() - laoTime);
+print >> sys.stderr, "Time taken for LAO/STO model is [%2.3f] s."% (time.time() - laoTime);
 #Parameters, small changes, arrays; these are here because they depend on the fermi surface calculation, which itself depends on phiArray
 kFermi	= np.max(fermiSurface)
-dK = kFermi/N
-kArray		= np.arange(1e-15, kFermi+2*dK, dK) 
-dkdphi = dK*dPhi;
+dK 	= kFermi/N
+kArray	= np.arange(1e-15, kFermi+2*dK, dK) 
+dkdphi  = dK*dPhi;
 
 #Define Lambda functions.
 Heaviside 	= lambda xx: 1.0 * (xx>0) 
@@ -109,10 +109,10 @@ elif gapfunction == 1:
 	print >> sys.stderr, "Selected d_{xy} wave";
 	Delta = lambda dd, kk, pp: dd*np.sin(kk*np.cos(pp))*np.sin(kk*np.sin(pp))
 elif gapfunction == 2:  
-	print >> sys.stderr, "Selected isotropic  s-wave (equiv. leading order)";
+	print >> sys.stderr, "Selected s^0-wave (equiv. leading order)";
 	Delta = lambda dd, kk, pp: dd + pp*0.
 elif gapfunction == 3:  
-	print >> sys.stderr, "Selected anisotropic s-wave (equiv. next leading order)";
+	print >> sys.stderr, "Selected s^1-wave (equiv. next leading order)";
 	Delta = lambda dd, kk, pp: deltaS + dd * ( np.cos(kk*np.cos(pp)) + np.cos(kk*np.sin(pp)))
 else:
 	raise Exception("Unknown gap function.") 
@@ -151,8 +151,9 @@ else:
 #Energies.
 Energy		= lambda kk, dd: (eta*kk**2 + dd**2)**0.5
 EnergyR		= lambda kk, dd, pp: (eta*kk**2 + Delta(kk,dd,pp)**2)**0.5
+EnergyPart 	= lambda kk,dd,pp: 1./( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
 #Current
-dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) /( (Energy(kk,deltaS)+EnergyR(kk,dd,pp)) * (Energy(kk,deltaS)*EnergyR(kk,dd,pp)))
+dCurrent	= lambda ff, dd, kk, pp:tunnel(kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) * EnergyPart(kk,dd,pp)
 #Pre-plotting
 flatWorld = True
 
@@ -195,7 +196,7 @@ elif plotMode == 1:
 	plt.ylabel("$\Delta^0$") 
 	title = "Current";
 elif plotMode == 2:  
-	ax.view_init(0, 90) 
+	ax.view_init(0, -90) 
 	#It's just mode 1 with a different view angle
 	
 	flux, delta, k, phi = np.meshgrid(fluxArray,deltaArray,kArray,phiArray);
@@ -262,6 +263,35 @@ elif plotMode == 6:
 	plt.xlabel("$k_x$")
 	plt.ylabel("$k_y$")
 	title = "Gap function times tunnel";  
+#Modes 7-8-9-10 are different, because of the weird parameters being used.
+#They are meant to investigate how sensitive the measurement is to the selection.
+#Mode 7 is the template, so it will use the block tunnel that could've been done
+#the 'original' way.
+elif plotMode == 7:  
+	ax.view_init(0, -90) 
+	#It's just mode 1 with a different view angle
+	
+	#FD block
+	## from scatter_plot
+	##  y1 =  heaviside(mu1 + mu/2 - x)  - heaviside(mu1 - mu/2 - x)
+	
+	mu = np.pi/4.*3.
+	width = np.pi/4.
+	sigmaArray = np.linspace(mu/100.,mu,N)
+	dd = deltaS
+	#w for weird
+	wunnel = lambda ss,mm, kk,pp: Heaviside( mm + width - pp) - Heaviside(mm - width-pp)
+	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+
+	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
+	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
+	
+	
+	x,y = np.meshgrid(fluxArray, sigmaArray) 
+	
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\sigma$") 
+	title = "Block relaxation";
 else:
 	raise Exception("Unknown plot mode.");   
 
