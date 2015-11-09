@@ -292,6 +292,32 @@ elif plotMode == 7:
 	plt.xlabel("$\Phi$")
 	plt.ylabel("$\sigma$") 
 	title = "Block relaxation";
+elif plotMode == 8:  
+	ax.view_init(0, -90) 
+	#It's just mode 1 with a different view angle
+	
+	#FD block
+	## from scatter_plot
+	nfd = lambda xx, sigma, mu: (np.exp( (xx-mu)/sigma) + 1)**(-1)
+	##y2 =  nfd(-x, sigma, -(mu2+mu/2)) * nfd(x, sigma, mu2-mu/2)
+	
+	mu = np.pi/4.*3.
+	width = np.pi/4.
+	sigmaArray = np.linspace(mu/100.,2*mu,N)
+	dd = deltaS
+	#w for weird
+	wunnel = lambda ss,mm, kk,pp: nfd(-pp, ss, -(mu+width)) * nfd(pp, ss, mu-width)
+	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+
+	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
+	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
+	
+	
+	x,y = np.meshgrid(fluxArray, sigmaArray) 
+	
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\sigma$") 
+	title = "Fermi-Dirac relaxation";
 else:
 	raise Exception("Unknown plot mode.");   
 
