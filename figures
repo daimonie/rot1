@@ -1,0 +1,85 @@
+#d squared 
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 0 -p 7 -f "figure_block_d_squared_band_0.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 1 -p 7 -f "figure_block_d_squared_band_1.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 2 -p 7 -f "figure_block_d_squared_band_2.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 3 -p 7 -f "figure_block_d_squared_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 0 -p 8 -f "figure_fdblock_d_squared_band_0.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 1 -p 8 -f "figure_fdblock_d_squared_band_1.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 2 -p 8 -f "figure_fdblock_d_squared_band_2.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 3 -p 8 -f "figure_fdblock_d_squared_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 0 -p 9 -f "figure_gauss_d_squared_band_0.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 1 -p 9 -f "figure_gauss_d_squared_band_1.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 2 -p 9 -f "figure_gauss_d_squared_band_2.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 3 -p 9 -f "figure_gauss_d_squared_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 0 -p 10 -f "figure_lorentz_d_squared_band_0.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 1 -p 10 -f "figure_lorentz_d_squared_band_1.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 2 -p 10 -f "figure_lorentz_d_squared_band_2.png"
+python josephson.py -n 60 -m 0 -d 0 -k 1 -b 3 -p 10 -f "figure_lorentz_d_squared_band_3.png"
+
+#d xy
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 0 -p 7 -f "figure_block_d_xy_band_0.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 1 -p 7 -f "figure_block_d_xy_band_1.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 2 -p 7 -f "figure_block_d_xy_band_2.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 3 -p 7 -f "figure_block_d_xy_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 0 -p 8 -f "figure_fdblock_d_xy_band_0.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 1 -p 8 -f "figure_fdblock_d_xy_band_1.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 2 -p 8 -f "figure_fdblock_d_xy_band_2.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 3 -p 8 -f "figure_fdblock_d_xy_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 0 -p 9 -f "figure_gauss_d_xy_band_0.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 1 -p 9 -f "figure_gauss_d_xy_band_1.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 2 -p 9 -f "figure_gauss_d_xy_band_2.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 3 -p 9 -f "figure_gauss_d_xy_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 0 -p 10 -f "figure_lorentz_d_xy_band_0.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 1 -p 10 -f "figure_lorentz_d_xy_band_1.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 2 -p 10 -f "figure_lorentz_d_xy_band_2.png"
+python josephson.py -n 60 -m 0 -d 1 -k 1 -b 3 -p 10 -f "figure_lorentz_d_xy_band_3.png"
+
+
+#s 0
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 0 -p 7 -f "figure_block_s_zero_band_0.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 1 -p 7 -f "figure_block_s_zero_band_1.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 2 -p 7 -f "figure_block_s_zero_band_2.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 3 -p 7 -f "figure_block_s_zero_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 0 -p 8 -f "figure_fdblock_s_zero_band_0.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 1 -p 8 -f "figure_fdblock_s_zero_band_1.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 2 -p 8 -f "figure_fdblock_s_zero_band_2.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 3 -p 8 -f "figure_fdblock_s_zero_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 0 -p 9 -f "figure_gauss_s_zero_band_0.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 1 -p 9 -f "figure_gauss_s_zero_band_1.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 2 -p 9 -f "figure_gauss_s_zero_band_2.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 3 -p 9 -f "figure_gauss_s_zero_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 0 -p 10 -f "figure_lorentz_s_zero_band_0.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 1 -p 10 -f "figure_lorentz_s_zero_band_1.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 2 -p 10 -f "figure_lorentz_s_zero_band_2.png"
+python josephson.py -n 60 -m 0 -d 2 -k 1 -b 3 -p 10 -f "figure_lorentz_s_zero_band_3.png"
+
+#s 1
+
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 0 -p 7 -f "figure_block_s_one_band_0.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 1 -p 7 -f "figure_block_s_one_band_1.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 2 -p 7 -f "figure_block_s_one_band_2.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 3 -p 7 -f "figure_block_s_one_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 0 -p 8 -f "figure_fdblock_s_one_band_0.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 1 -p 8 -f "figure_fdblock_s_one_band_1.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 2 -p 8 -f "figure_fdblock_s_one_band_2.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 3 -p 8 -f "figure_fdblock_s_one_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 0 -p 9 -f "figure_gauss_s_one_band_0.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 1 -p 9 -f "figure_gauss_s_one_band_1.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 2 -p 9 -f "figure_gauss_s_one_band_2.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 3 -p 9 -f "figure_gauss_s_one_band_3.png"
+
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 0 -p 10 -f "figure_lorentz_s_one_band_0.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 1 -p 10 -f "figure_lorentz_s_one_band_1.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 2 -p 10 -f "figure_lorentz_s_one_band_2.png"
+python josephson.py -n 60 -m 0 -d 3 -k 1 -b 3 -p 10 -f "figure_lorentz_s_one_band_3.png"
