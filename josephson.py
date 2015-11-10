@@ -268,7 +268,7 @@ elif plotMode == 6:
 #Mode 7 is the template, so it will use the block tunnel that could've been done
 #the 'original' way.
 elif plotMode == 7:  
-	ax.view_init(0, -90) 
+	ax.view_init(89, -91) 
 	#It's just mode 1 with a different view angle
 	
 	#FD block
@@ -293,7 +293,7 @@ elif plotMode == 7:
 	plt.ylabel("$\sigma$") 
 	title = "Block relaxation";
 elif plotMode == 8:  
-	ax.view_init(0, -90) 
+	ax.view_init(89, -91) 
 	#It's just mode 1 with a different view angle
 	
 	#FD block
@@ -318,6 +318,56 @@ elif plotMode == 8:
 	plt.xlabel("$\Phi$")
 	plt.ylabel("$\sigma$") 
 	title = "Fermi-Dirac relaxation";
+elif plotMode == 9:  
+	ax.view_init(89, -91) 
+	#It's just mode 1 with a different view angle
+	
+	#FD block
+	## from scatter_plot 
+	gaussian = lambda xx, sigma, mu: np.exp( - (xx-mu)**2 / (2 * sigma**2)) 
+	
+	mu = np.pi/4.*3.
+	width = np.pi/4.
+	sigmaArray = np.linspace(mu/100.,2*mu,N)
+	dd = deltaS
+	#w for weird
+	wunnel = lambda ss,mm, kk,pp: gaussian(pp,ss,mu);
+	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+
+	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
+	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
+	
+	
+	x,y = np.meshgrid(fluxArray, sigmaArray) 
+	
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\sigma$") 
+	title = "Gaussian relaxation";
+elif plotMode == 10:  
+	ax.view_init(89, -91) 
+	#It's just mode 1 with a different view angle
+	
+	#FD block
+	## from scatter_plot 
+	lorentzian = lambda xx, sigma, mu: sigma**2 / ( (xx-mu)**2 + sigma**2)
+	
+	mu = np.pi/4.*3.
+	width = np.pi/4.
+	sigmaArray = np.linspace(mu/100.,2*mu,N)
+	dd = deltaS
+	#w for weird
+	wunnel = lambda ss,mm, kk,pp: lorentzian(pp,ss,mu);
+	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+
+	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
+	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
+	
+	
+	x,y = np.meshgrid(fluxArray, sigmaArray) 
+	
+	plt.xlabel("$\Phi$")
+	plt.ylabel("$\sigma$") 
+	title = "Lorentzian relaxation";
 else:
 	raise Exception("Unknown plot mode.");   
 
