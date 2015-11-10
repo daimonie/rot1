@@ -236,7 +236,7 @@ elif plotMode == 4:
 	plt.ylabel("$k_y$")
 	title = "Fermi disc";
 elif plotMode == 5:
-	ax.view_init(30, 30) 
+	ax.view_init(40, -30) 
 	k, phi = np.meshgrid(kArray,phiArray)
 	
 	x = k * np.cos(phi)
