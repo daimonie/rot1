@@ -95,7 +95,7 @@ print >> sys.stderr, "Time taken for LAO/STO model is [%2.3f] s."% (time.time() 
 #Parameters, small changes, arrays; these are here because they depend on the fermi surface calculation, which itself depends on phiArray
 kFermi	= np.max(fermiSurface)
 dK 	= kFermi/N
-kArray	= np.arange(1e-15, kFermi+2*dK, dK) 
+kArray	= np.linspace(1e-15, kFermi, N) 
 dkdphi  = dK*dPhi;
 
 #Define Lambda functions.
@@ -268,8 +268,8 @@ elif plotMode == 6:
 #Mode 7 is the template, so it will use the block tunnel that could've been done
 #the 'original' way.
 elif plotMode == 7:  
-	ax.view_init(89, -91) 
-	#It's just mode 1 with a different view angle
+	#ax.view_init(89, -91) top
+	ax.view_init(60, -70)   
 	
 	#FD block
 	## from scatter_plot
@@ -281,7 +281,7 @@ elif plotMode == 7:
 	dd = deltaS
 	#w for weird
 	wunnel = lambda ss,mm, kk,pp: Heaviside( mm + width - pp) - Heaviside(mm - width-pp)
-	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+	wCurrent = lambda ff, ss, kk, pp: Fermi(kk, pp)*wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
 
 	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
 	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
@@ -293,8 +293,8 @@ elif plotMode == 7:
 	plt.ylabel("$\sigma$") 
 	title = "Block relaxation";
 elif plotMode == 8:  
-	ax.view_init(89, -91) 
-	#It's just mode 1 with a different view angle
+	#ax.view_init(89, -91) top
+	ax.view_init(60, -70)    
 	
 	#FD block
 	## from scatter_plot
@@ -307,7 +307,7 @@ elif plotMode == 8:
 	dd = deltaS
 	#w for weird
 	wunnel = lambda ss,mm, kk,pp: nfd(-pp, ss, -(mu+width)) * nfd(pp, ss, mu-width)
-	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+	wCurrent = lambda ff, ss, kk, pp: Fermi(kk, pp)*wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
 
 	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
 	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
@@ -319,8 +319,8 @@ elif plotMode == 8:
 	plt.ylabel("$\sigma$") 
 	title = "Fermi-Dirac relaxation";
 elif plotMode == 9:  
-	ax.view_init(89, -91) 
-	#It's just mode 1 with a different view angle
+	#ax.view_init(89, -91) top
+	ax.view_init(60, -70)  
 	
 	#FD block
 	## from scatter_plot 
@@ -332,7 +332,7 @@ elif plotMode == 9:
 	dd = deltaS
 	#w for weird
 	wunnel = lambda ss,mm, kk,pp: gaussian(pp,ss,mu);
-	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+	wCurrent = lambda ff, ss, kk, pp: Fermi(kk, pp)*wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
 
 	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
 	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
@@ -344,8 +344,8 @@ elif plotMode == 9:
 	plt.ylabel("$\sigma$") 
 	title = "Gaussian relaxation";
 elif plotMode == 10:  
-	ax.view_init(89, -91) 
-	#It's just mode 1 with a different view angle
+	#ax.view_init(89, -91) top
+	ax.view_init(60, -70)  
 	
 	#FD block
 	## from scatter_plot 
@@ -357,7 +357,7 @@ elif plotMode == 10:
 	dd = deltaS
 	#w for weird
 	wunnel = lambda ss,mm, kk,pp: lorentzian(pp,ss,mu);
-	wCurrent = lambda ff, ss, kk, pp: wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
+	wCurrent = lambda ff, ss, kk, pp: Fermi(kk, pp)*wunnel(ss,mu,kk,pp)*dkdphi*np.abs(Delta(dd, kk, pp))*deltaS*np.sin(-np.angle(Delta(dd,kk,pp)) + ff) *EnergyPart(kk,dd,pp)
 
 	flux, sigma, k, phi = np.meshgrid(fluxArray,sigmaArray,kArray,phiArray);
 	z = wCurrent(flux,sigma, k, phi).sum(axis=-1).sum(axis=-1) 
@@ -367,7 +367,7 @@ elif plotMode == 10:
 	
 	plt.xlabel("$\Phi$")
 	plt.ylabel("$\sigma$") 
-	title = "Lorentzian relaxation";
+	title = "Lorentzian relaxation"; 
 else:
 	raise Exception("Unknown plot mode.");   
 
