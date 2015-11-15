@@ -92,7 +92,7 @@ end = indices[band, 2]
 
 fermiLevel = kFermis[start:end,:]
 fermiSurface = ((fermiLevel**2).sum(axis=1))**0.5
-
+print >> sys.stderr, "Magnetic Field H=%2.3f for the LAOSTO model." % magnetic
 print >> sys.stderr, "Time taken for LAO/STO model is [%2.3f] s."% (time.time() - laoTime);
 #Parameters, small changes, arrays; these are here because they depend on the fermi surface calculation, which itself depends on phiArray
 kFermi	= np.max(fermiSurface)
