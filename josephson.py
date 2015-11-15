@@ -35,6 +35,7 @@ parser.add_argument('--scatter', help='Use a scatterplot instead of a surface pl
 parser.add_argument('--alpha', help='First view angle.', default = 1000, action='store', type = int)  
 parser.add_argument('--beta', help='Second view angle.', default = 1000, action='store', type = int)  
 parser.add_argument('--gamma', help='Plot transparency.', default = 0.9, action='store', type = float)  
+parser.add_argument('--magnetic', help='Alter magnetic field.', default = 0.0, action='store', type = float)  
 args	= parser.parse_args() 
 
 
@@ -50,6 +51,7 @@ alpha		= args.alpha
 beta		= args.beta
 gamma		= args.gamma
 silent		= args.silent
+magnetic	= args.magnetic
  
 startTime = time.time();
 
@@ -81,7 +83,7 @@ phiArray	= np.linspace(0,		2*np.pi, N)
 
 laoTime = time.time();
 kF0 = [0.5*pi, 0.5*pi, 0.5*pi, 0.5*pi, -1, -1]
-system = LAOSTO(mu=0, H=30, theta=np.pi/4, g=5, gL=1, tl1=340, tl2=340, th=12.5, td=12.5, dE=60, dZ=15, dSO=5)
+system = LAOSTO(mu=0, H=magnetic, theta=np.pi/4, g=5, gL=1, tl1=340, tl2=340, th=12.5, td=12.5, dE=60, dZ=15, dSO=5)
 
 
 kFermis, indices = kF_angle(system, phiArray, kF0)
